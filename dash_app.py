@@ -37,18 +37,10 @@ app.layout = html.Div([
         },
         multiple=False
     ),
-    html.Div(id='output-image-upload',
-        style={
-            'textAlign': 'left',
-            'width': '20%'
-        }
-    ),
-    html.Div(id='predictions-graph',
-        style={
-            'textAlign': 'right',
-            'width': '70%'
-        }
-    )
+    html.Div([
+        html.Div(id='output-image-upload', className="four columns"),
+        html.Div(id='predictions-graph', className="eight columns")
+    ], className="row"),
 ])
 
 
@@ -87,7 +79,7 @@ def update_output(content):
         fig = px.bar(df, x='prediction', y='label')
 
         response_block_graph = html.Div([
-            dcc.Graph(figure=fig)
+            dcc.Graph(figure=fig, config={'displayModeBar': False})
         ])
 
 
