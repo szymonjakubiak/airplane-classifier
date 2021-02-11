@@ -3,8 +3,9 @@ import base64
 from io import BytesIO
 from PIL import Image
 import numpy as np
+import pandas as pd
 from fastai.learner import load_learner
-
+import plotly.express as px
 
 import dash
 from dash.dependencies import Input, Output, State
@@ -25,7 +26,7 @@ app.layout = html.Div([
             html.A('Select Files')
         ]),
         style={
-            'width': '100%',
+            'width': '100pv',
             'height': '60px',
             'lineHeight': '60px',
             'borderWidth': '1px',
@@ -38,24 +39,61 @@ app.layout = html.Div([
     ),
     html.Div(id='output-image-upload',
         style={
-            'textAlign': 'center'
+            'textAlign': 'left',
+            'width': '20%'
         }
     ),
+    html.Div(id='predictions-graph',
+        style={
+            'textAlign': 'right',
+            'width': '70%'
+        }
+    )
 ])
 
 
 
 @app.callback(Output('output-image-upload', 'children'),
+              Output('predictions-graph', 'children'),
               Input('upload-image', 'contents'))
 def update_output(content):
     if content is not None:
-        img_str = base64.b64decode(content.split(',')[-1])
+        # decode base64 string
+        padding, encoded_img = content.split(',')
+        img_str = base64.b64decode(encoded_img)
         img_io = BytesIO(img_str)
         img = Image.open(img_io)
 
-        print(learn.predict(np.array(img)))
+        # print(learn.predict(np.array(img)))
 
-        return html.Img(src=content)
+        # resize and get b64 string
+        img_thumb = img.resize(size=(224, 224))
+        img_buffer = BytesIO()
+        img_thumb.save(img_buffer, 'png')
+        img_thumb_str = padding + ',' + base64.b64encode(img_buffer.getvalue()).decode('utf-8')
+
+        vocab = learn.dls.vocab
+        predicted_class, _, predictions = learn.predict(np.array(img))
+
+
+        response_block_image = html.Div([
+            html.Div(str(learn.predict(np.array(img)))),
+            html.Img(src=img_thumb_str)
+        ])
+
+
+
+        df = pd.DataFrame.from_dict({'label': vocab, 'prediction': predictions}).sort_values('prediction')
+        fig = px.bar(df, x='prediction', y='label')
+
+        response_block_graph = html.Div([
+            dcc.Graph(figure=fig)
+        ])
+
+
+
+        return response_block_image, response_block_graph
+    return None, None
 
 
 if __name__ == '__main__':
