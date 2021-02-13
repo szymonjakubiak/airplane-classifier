@@ -62,7 +62,7 @@ def update_output(content):
         padding, encoded_img = content.split(',')
         img_str = base64.b64decode(encoded_img)
         img_io = BytesIO(img_str)
-        img = Image.open(img_io)
+        img = Image.open(img_io).convert('RGB')
 
         # print(learn.predict(np.array(img)))
 
