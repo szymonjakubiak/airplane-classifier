@@ -1,2 +1,10 @@
-airplane_classif
-__pycache__
+*
+# env
+# __pycache__
+# *.png
+# *.jpg
+# *.pth
+# *.pkl
+!Dockerfile
+!.gitignore
+!dash_app.py
