@@ -1,10 +1,5 @@
-*
-# env
-# __pycache__
-# *.png
-# *.jpg
-# *.pth
-# *.pkl
-!Dockerfile
-!.gitignore
-!dash_app.py
+other/
+env/
+__pycache__/
+test/
+resnet50_v2.pkl
