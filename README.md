@@ -1,5 +1,5 @@
 # Introduction
-Project contains dockerized application that can recognize an airliner model based on uploaded image.  
+Project contains dockerized application that can recognize an airliner model based on uploaded image. Underlying ML model is resnet50 tuned via fastai library, based on scraped images ([modified DuckDuckGo scraper](https://github.com/SzymonJakubiak/ddg_scraper)).
 ![app UI](img/app_view.png)  
 Apart from essential elements for docker image building, this repository includes additional folders:
 * exaples: sample images of planes so that user can quickly test the application (but is encouraged to try their own photos);
